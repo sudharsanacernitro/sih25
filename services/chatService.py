@@ -5,7 +5,11 @@ import numpy as np
 import tensorflow as tf
 from scipy.stats import mode
 
+from agents.chatAgent.agentHandler import runAgent
+
 tf.config.set_visible_devices([], 'GPU')
+
+conversationHistory = []
 
 def handleChatService(message, image):
     """
@@ -35,10 +39,12 @@ def handleChatService(message, image):
         elif (message is not None or message != "") and image_path is not None:
 
             message = f"diseaseName :{diseaseFound} \n\n"+message
+            
+            resp = runAgent(conversationHistory=conversationHistory , message = message)
 
             return {
                 "status" : 200,
-                "message" : message,
+                "message" : resp,
                 "DiseaseName" : diseaseFound,
                 "image_path" : image_path
             }
@@ -47,9 +53,11 @@ def handleChatService(message, image):
 
             message = f"Explain about this disease \n diseaseName : { diseaseFound}"
 
+            resp = runAgent(conversationHistory=conversationHistory , message = message)
+
             return {
                 "status" : 200,
-                "message" : message,
+                "message" : resp,
                 "DiseaseName" : diseaseFound ,
                 "image_path" : image_path
             }
@@ -58,9 +66,13 @@ def handleChatService(message, image):
 
             message = " Explain this question with previous context \n\n"+message
 
+            resp = runAgent(conversationHistory=conversationHistory , message = message)
+
+            print(resp)
+            
             return {
                 "status" : 200,
-                "message" : message,
+                "message" : resp,
                 "DiseaseName" : None,
                 "image_path" : None
             }
@@ -72,7 +84,7 @@ def handleChatService(message, image):
         print(f"Error Occured : {e}")
         
         return {
-            status : 500,
+            "status" : 500,
             'message' : e,
             "image_path" : None
         }
