@@ -7,13 +7,15 @@ from langchain_community.embeddings import OllamaEmbeddings
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 
+from langchain_core.tools import tool
+
 
 llm = ChatOllama( model=  'qwen2.5-coder:3b' )
 
 class AgentState(TypedDict):
     messages : List[Union[HumanMessage,AIMessage]]
 
-
+    
 def process( state: AgentState ) -> AgentState:
     """ This node is used to answer the user queries"""
 
